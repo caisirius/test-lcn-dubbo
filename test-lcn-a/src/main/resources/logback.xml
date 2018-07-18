@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 日志组件启动时，打印调试信息，并监控此文件变化，周期300秒 -->
+<configuration scan="true" scanPeriod="300 seconds" debug="true">
+
+    <!-- 配置文件，包括此文件内的所有变量的配置 -->
+
+
+    <property name="appname" value="trade-center"/>
+
+    <property name="mypattern"
+              value="%d{HH:mm:ss.SSS} [%X{__X-TraceID__}] [%thread] %-5level %logger{36}:%L - %msg%n"/>
+
+    <appender name="AsyncTrace" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+    <!-- ***************************************************************** -->
+    <!-- STDOUT APENDER -->
+    <!-- ***************************************************************** -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${mypattern}</pattern>
+        </encoder>
+    </appender>
+
+
+    <logger name="org.apache.zookeeper.ZooKeeper" level="warn" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.apache" level="warn" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.eclipse" level="warn" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.springframework" level="warn" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="net" level="error">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.springframework.aop.framework.Cglib2AopProxy"
+            level="error">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.springframework.aop.framework.CglibAopProxy"
+            level="error">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.alibaba" level="warn" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="ch.qos" level="error" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="com.lcn" level="debug" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="com.codingapi.tx" level="debug" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <!--Application log is appended to the Console and TraceRollingFile，The
+        default level is INFO -->
+    <root level="INFO">
+        <appender-ref ref="AsyncTrace"/>
+    </root>
+
+</configuration>
