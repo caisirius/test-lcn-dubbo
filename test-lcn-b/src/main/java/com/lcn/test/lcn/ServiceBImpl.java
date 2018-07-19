@@ -101,6 +101,7 @@ public class ServiceBImpl implements ServiceB {
     }
 
     @Override
+    @TxTransaction
     public Result<String> updt(Request<Integer> request) {
         try {
             serviceBBiz.autoAdd(request.getData());
