@@ -3,6 +3,7 @@ package com.lcn.test.lcn;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.codingapi.tx.annotation.TxTransaction;
+import com.codingapi.tx.annotation.TxTransactionMode;
 import com.lcn.test.dto.base.BaseResult;
 import com.lcn.test.dto.base.Request;
 import com.lcn.test.dto.base.Result;
@@ -45,6 +46,17 @@ public class ServiceAImpl implements ServiceA {
     }
 
 
+    @Override
+    @TxTransaction(isStart=true, mode = TxTransactionMode.TX_MODE_TXC)
+    public Result<String> insertTxc(Request<String> request) {
+        return insertTest(request, true);
+    }
+
+    @Override
+    @TxTransaction(isStart=true, mode = TxTransactionMode.TX_MODE_TXC)
+    public Result<String> insertUpdtTxc(Request<Integer> request) {
+        return insertUpdtTest(request);
+    }
 
 
 
@@ -67,10 +79,22 @@ public class ServiceAImpl implements ServiceA {
     }
 
     private Result<String> insertTest(Request<String> request) {
+        return insertTest(request, false);
+    }
+
+    /**
+     * @param request req
+     * @param bizWithAnnotation biz 方法是否带@Transaction 注解
+     */
+    private Result<String> insertTest(Request<String> request, boolean bizWithAnnotation) {
         // do my own job
         String key = System.currentTimeMillis() + "-" + request.getData();
 
-        serviceABiz.doBussiness(key);
+        if (bizWithAnnotation) {
+            serviceABiz.doBussinessWithTran(key);
+        } else {
+            serviceABiz.doBussiness(key);
+        }
 
         // do call serivice B
         callB(key);

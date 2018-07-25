@@ -21,7 +21,16 @@ public class ServiceABiz {
     TestAMapper testAMapper;
 
 
-//    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
+    public void doBussinessWithTran(String key) {
+        TestA record = new TestA();
+        record.setName("这是系统 A 插入的:" + key);
+        record.setCreateTime(new Date());
+
+        testAMapper.insertSelective(record);
+
+    }
+
     public void doBussiness(String key) {
         TestA record = new TestA();
         record.setName("这是系统 A 插入的:" + key);

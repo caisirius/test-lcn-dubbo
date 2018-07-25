@@ -9,11 +9,11 @@ public interface ServiceA {
 
 	Result<String> insertLcn(Request<String> request);
 
-//	Result<String> insertTxc(Request<String> request);
+	Result<String> insertTxc(Request<String> request);
 
 	Result<String> insertUpdtLcn(Request<Integer> request);
 
-//	Result<String> insertUpdtTxc(Request<String> request);
+	Result<String> insertUpdtTxc(Request<Integer> request);
 
 	//子事务超时
 //	BaseResult insertTxcTimeoutSub(Request<String> timeout);

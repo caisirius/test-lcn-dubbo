@@ -82,6 +82,11 @@
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
+    <logger name="com.codingapi.tx.netty.handler" level="info" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
 
     <!--Application log is appended to the Console and TraceRollingFile，The
         default level is INFO -->

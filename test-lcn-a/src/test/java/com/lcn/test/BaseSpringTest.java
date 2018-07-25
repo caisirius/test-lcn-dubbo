@@ -110,4 +110,8 @@ public class BaseSpringTest {
     protected void assertForRollback(int sleepSec)  {
         assertForInsert(0,0,sleepSec);
     }
+
+    protected void assertForRollback()  {
+        assertForInsert(0,0,3);
+    }
 }

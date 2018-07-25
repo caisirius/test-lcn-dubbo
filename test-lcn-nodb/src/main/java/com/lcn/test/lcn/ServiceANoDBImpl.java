@@ -3,6 +3,7 @@ package com.lcn.test.lcn;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.codingapi.tx.annotation.TxTransaction;
+import com.codingapi.tx.annotation.TxTransactionMode;
 import com.lcn.test.dto.base.BaseResult;
 import com.lcn.test.dto.base.Request;
 import com.lcn.test.dto.base.Result;
@@ -71,4 +72,13 @@ public class ServiceANoDBImpl implements ServiceA {
         }
         return Result.<String>create().success("" + id);
     }
+
+    @Override
+    @TxTransaction(isStart = true, mode = TxTransactionMode.TX_MODE_TXC)
+    public Result<String> insertTxc(Request<String> request) {
+        Result<String> result = Result.create();
+        insertb(request);
+        return result.success("yes");
+    }
+
 }

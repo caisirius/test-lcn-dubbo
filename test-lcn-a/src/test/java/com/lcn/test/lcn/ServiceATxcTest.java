@@ -22,39 +22,23 @@ public class ServiceATxcTest extends BaseSpringTest {
 
     @Autowired
     ServiceA serviceA;
-    @Autowired
-    TestAMapper testAMapper;
-    @Autowired
-    TestBMapper testBMapper;
 
-    TestAExample example;
-    TestBExample example2;
-
-    /** Method: a(Request<String> request)
+    /** 正常提交
     */
     @Test
     public void testCommit() throws Exception {
         // 正常提交
-//        result = serviceA.insertTxc(Request.<String>create().data("junit"));
+        result = serviceA.insertTxc(Request.<String>create().data("junit"));
 
-//        example = new TestAExample();
-//        example2= new TestBExample();
-//        example.createCriteria();
-//        int counta =testAMapper.countByExample(example);
-//        example2.createCriteria();
-//
-//        int countb =testBMapper.countByExample(example2);
-//
-//        Assert.assertEquals(1, counta);
-//        Assert.assertEquals(2, countb);
+        assertForInsert(1,2, 0);
     }
 
-    ///// 异常回滚,主事务跑异常（异常不在子事务中）
-//    @Test
-//    public void testRollback_exception_1() throws Exception {
-//        result = serviceA.insertTxc(Request.<String>create().data("error"));
-//        assertForRollback();
-//    }
+    ///// 异常回滚,主事务异常（异常不在子事务中）
+    @Test
+    public void testRollback_exception_1() throws Exception {
+        result = serviceA.insertTxc(Request.<String>create().data("error"));
+        assertForRollback();
+    }
 
     ///// 异常回滚,子事务抛异常,(主子事务在一个工程)
 //    @Test
