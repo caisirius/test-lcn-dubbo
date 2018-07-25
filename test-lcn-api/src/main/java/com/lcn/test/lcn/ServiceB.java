@@ -60,4 +60,10 @@ public interface ServiceB {
 	 * @return
 	 */
 	Result<Void> reset(Request<Void> request);
+
+	/**
+	 * 带@TxTransaction 不带@Transaction
+	 * @return
+	 */
+	Result<Void> test1(Request<Void> request);
 }

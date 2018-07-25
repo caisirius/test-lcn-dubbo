@@ -31,6 +31,9 @@ public class ServiceABiz {
 
     }
 
+    /**
+     * 不带事务注解
+     */
     public void doBussiness(String key) {
         TestA record = new TestA();
         record.setName("这是系统 A 插入的:" + key);
@@ -41,7 +44,7 @@ public class ServiceABiz {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void doBussinessWithException(String key) {
+    public void doBussinessException(String key) {
         TestA record = new TestA();
         record.setName("这是系统 A 插入的:" + key);
         record.setCreateTime(new Date());

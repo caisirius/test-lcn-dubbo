@@ -38,7 +38,7 @@ public class ServiceALcnTest extends BaseSpringTest {
 
     }
     /**
-     * 测试LCN模式 异常场景 a->b
+     * 测试LCN模式 异常-主事务异常 a->b
      * a服务：插入一条记录，call b服务连续2次，之后故意抛异常
      * b服务：插入一条记录，正常返回
      * @throws Exception

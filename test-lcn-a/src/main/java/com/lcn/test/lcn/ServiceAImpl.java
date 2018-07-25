@@ -46,9 +46,17 @@ public class ServiceAImpl implements ServiceA {
     }
 
 
+    /////////// TXC 的用例 ////////////
+    /**
+     * TXC 有数据库
+     */
     @Override
     @TxTransaction(isStart=true, mode = TxTransactionMode.TX_MODE_TXC)
     public Result<String> insertTxc(Request<String> request) {
+        // 调一个 子事务 readonly 的服务
+        serviceB.count(Request.<Void>create());
+        // 调一个 子事务 既没配 readonly 也没配 @Transaction 的服务
+        serviceB.test1(Request.<Void>create());
         return insertTest(request, true);
     }
 
@@ -58,7 +66,128 @@ public class ServiceAImpl implements ServiceA {
         return insertUpdtTest(request);
     }
 
+    @TxTransaction(isStart=true, mode = TxTransactionMode.TX_MODE_TXC)
+    @Override
+    public BaseResult insertTxcException2(Request<String> request) {
+        return inserttTxcException2(request);
+    }
 
+    @TxTransaction(isStart=true, mode = TxTransactionMode.TX_MODE_TXC)
+    @Override public BaseResult insertTxcException3(Request<String> request) {
+        // do my own job
+        String key = System.currentTimeMillis() + "-" + request.getData();
+
+        serviceABiz.doBussiness(key);
+
+        if (request.getData().equals("inner")) {
+            callBExctptionInner(key);
+        }
+
+        if (request.getData().equals("outter")) {
+            callBExctptionOutter(key);
+        }
+
+        return Result.<String> create().success("success");
+    }
+
+    @TxTransaction(isStart=true, mode = TxTransactionMode.TX_MODE_TXC)
+    @Override public BaseResult insertTxcTimeoutMain(Request<String> request) {
+        return insertTimeoutMain(request);
+    }
+
+    @TxTransaction(isStart=true, mode = TxTransactionMode.TX_MODE_TXC)
+    @Override
+    public BaseResult insertTxcTimeoutSub(Request<String> request) {
+        return insertTimeOutSub(request);
+    }
+
+    @TxTransaction(isStart=true, mode = TxTransactionMode.TX_MODE_TXC)
+    @Override public BaseResult insertTxcTimeoutSubs(Request<String> request) {
+        return insertTimeOutSubs(request);
+    }
+
+
+    //////////////////////
+
+    private BaseResult insertTimeoutMain(Request<String> request) {
+        // do my own job
+        String key = System.currentTimeMillis() + "-" + request.getData();
+
+        serviceABiz.doBussiness(key);
+
+        // do call serivice B
+        callB(key);
+
+        try {
+            Thread.sleep(11000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return Result.<String> create().success("success");
+    }
+
+    private BaseResult insertTimeOutSub(Request<String> request) {
+        // do my own job
+        String key = System.currentTimeMillis() + "-" + request.getData();
+
+        serviceABiz.doBussiness(key);
+
+        // do call serivice B
+        callBTimeOut(12);
+
+        return Result.<String> create().success("success");
+    }
+
+    private BaseResult insertTimeOutSubs(Request<String> request) {
+        // do my own job
+        String key = System.currentTimeMillis() + "-" + request.getData();
+
+        // do call serivice B
+        callBTimeOut(4);
+
+        serviceABiz.doBussiness(key);
+
+        callBTimeOut(3);
+
+        return Result.<String> create().success("success");
+    }
+
+    private void callBTimeOut(int timeout) {
+        logger.info("start to call b");
+        Result<String> bRet = serviceB.timeout(Request.<Integer> create().data(timeout));
+        if (!bRet.isSuccess()) {
+            throw new RuntimeException("调B失败");
+        }
+        logger.info("end call b");
+    }
+
+    private void callBExctptionOutter(String key) {
+        logger.info("start to call b");
+        Result<String> bRet = serviceB.exceptionOutter(Request.<String> create().data(key));
+        if (!bRet.isSuccess()) {
+            throw new RuntimeException("调B失败");
+        }
+        logger.info("end call b");
+    }
+
+    private void callBExctptionInner(String key) {
+        logger.info("start to call b");
+        Result<String> bRet = serviceB.exceptionInner(Request.<String> create().data(key));
+        if (!bRet.isSuccess()) {
+            throw new RuntimeException("调B失败");
+        }
+        logger.info("end call b");
+    }
+
+    private BaseResult inserttTxcException2(Request<String> request) {
+        // do my own job
+        String key = System.currentTimeMillis() + "-" + request.getData();
+
+        serviceABiz.doBussinessException(key);
+
+        return Result.<String> create().success("success");
+    }
 
     private void callB(String key) {
         logger.info("start to call b");
@@ -101,6 +230,7 @@ public class ServiceAImpl implements ServiceA {
 
         // call twice
         callB(key);
+
         if ("ERROR".equalsIgnoreCase(request.getData())) {
             int i = 100 / 0; // 故意抛异常
         }

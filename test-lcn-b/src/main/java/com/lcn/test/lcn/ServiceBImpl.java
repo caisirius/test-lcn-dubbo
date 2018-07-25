@@ -11,8 +11,10 @@ import com.lcn.test.dto.base.Result;
 import com.lcn.test.lcn.biz.IServiceBBiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
 /**
  * [类描述]
@@ -59,6 +61,17 @@ public class ServiceBImpl implements ServiceB {
     }
 
     @Override
+    @TxTransaction
+    public Result<Void> test1(Request<Void> request) {
+        TestB testB = testBMapper.selectByPrimaryKey(1);
+        if (testB == null) {
+            return Result.<Void>create().fail("","nodata");
+        }
+        return Result.<Void>create().success();
+    }
+
+    @Override
+    @TxTransaction
     public Result<String> timeout(Request<Integer> request) {
         try {
             serviceBBiz.doBussiness(System.currentTimeMillis() + "-" + "timeout");
@@ -76,6 +89,7 @@ public class ServiceBImpl implements ServiceB {
         return Result.<String>create().success("success");
     }
 
+    @TxTransaction
     @Override public Result<String> exceptionInner(Request<String> request) {
         try {
             serviceBBiz.doBussinessException(System.currentTimeMillis() + "-" + request.getData());
@@ -88,6 +102,7 @@ public class ServiceBImpl implements ServiceB {
         return Result.<String>create().success("success");
     }
 
+    @TxTransaction
     @Override public Result<String> exceptionOutter(Request<String> request) {
         try {
             serviceBBiz.doBussiness(System.currentTimeMillis() + "-" + request.getData());
@@ -96,7 +111,13 @@ public class ServiceBImpl implements ServiceB {
             throw new RuntimeException("B 插入数据失败", e);
         }
 
-        throw new RuntimeException("ouuter");
+        try {
+            TimeUnit.MILLISECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        throw new RuntimeException("outer");
 
     }
 
@@ -114,7 +135,9 @@ public class ServiceBImpl implements ServiceB {
     }
 
     @Override
+    @TxTransaction(readOnly = true)
     public Result<Integer> count(Request<Void> request) {
+        testBMapper.selectByPrimaryKey(1);
         return Result.<Integer>create().data(testBMapper.countByExample(new TestBExample()));
     }
 

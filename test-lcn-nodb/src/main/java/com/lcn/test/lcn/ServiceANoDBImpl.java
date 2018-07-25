@@ -74,6 +74,36 @@ public class ServiceANoDBImpl implements ServiceA {
     }
 
     @Override
+    public Result<String> insertUpdtTxc(Request<Integer> request) {
+        return null;
+    }
+
+    @Override
+    public BaseResult insertTxcTimeoutSub(Request<String> timeout) {
+        return null;
+    }
+
+    @Override
+    public BaseResult insertTxcTimeoutMain(Request<String> timeout) {
+        return null;
+    }
+
+    @Override
+    public BaseResult insertTxcTimeoutSubs(Request<String> timeout) {
+        return null;
+    }
+
+    @Override
+    public BaseResult insertTxcException2(Request<String> error) {
+        return null;
+    }
+
+    @Override
+    public BaseResult insertTxcException3(Request<String> excetion3) {
+        return null;
+    }
+
+    @Override
     @TxTransaction(isStart = true, mode = TxTransactionMode.TX_MODE_TXC)
     public Result<String> insertTxc(Request<String> request) {
         Result<String> result = Result.create();
