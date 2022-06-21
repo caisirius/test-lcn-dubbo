@@ -15,7 +15,7 @@
         <springframework.version>4.3.5.RELEASE</springframework.version>
         <mybatis.version>3.2.2</mybatis.version>
         <mybatis.spring.version>1.2.2</mybatis.spring.version>
-        <mysql.version>5.1.35</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <maven.test.jvmargs>-Djava.net.preferIPv4Stack=true</maven.test.jvmargs>
         <lcn.last.version>4.2.0-SNAPSHOT</lcn.last.version>
     </properties>
